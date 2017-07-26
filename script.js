@@ -41,8 +41,8 @@ function getJSON(url, successHandler, errorHandler) {
     xhr.send();
 };
 
-window.addEventListener("load", getJSON('http://localhost:3000/posts', function (data) {
-    console.log('Success ', data);
+window.addEventListener("load", getJSON('http://localhost:3000/posts', function (arrayData) {
+    console.log('Success ', arrayData);
 }, function (status) {
     console.log('Something went wrong.', status);
 }), false);
