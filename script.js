@@ -1,3 +1,10 @@
+function statusSuccess(data){
+    console.log('Success ', data);
+};
+function statusError(status) {
+    console.log('Something went wrong.', status);
+};
+
 function getJSON(url, successHandler, errorHandler) {
     var xhr = typeof XMLHttpRequest !== 'undefined'
         ? new XMLHttpRequest()
@@ -5,6 +12,7 @@ function getJSON(url, successHandler, errorHandler) {
 
     xhr.open('GET', url);
     var log = document.getElementById("log");
+
     xhr.onreadystatechange = function () {
         var status;
         var arrayData;
@@ -26,7 +34,7 @@ function getJSON(url, successHandler, errorHandler) {
                     keys.forEach(function (key) {
                         logItem += key + ': ' + element[key] + '; ';
                     });
-                    logItem += "</span><br>";
+                    logItem += "</span><br> ";
                     innerHtml += logItem;
                 }));
                 log = log.innerHTML = innerHtml;
@@ -41,8 +49,36 @@ function getJSON(url, successHandler, errorHandler) {
     xhr.send();
 };
 
-window.addEventListener("load", getJSON('http://localhost:3000/posts', function (arrayData) {
-    console.log('Success ', arrayData);
-}, function (status) {
-    console.log('Something went wrong.', status);
-}), false);
+window.addEventListener("load", getJSON('http://localhost:3000/posts', statusSuccess, statusError),  false);
+
+
+function postJSON(url) {
+
+    var xhr = typeof XMLHttpRequest !== 'undefined'
+        ? new XMLHttpRequest()
+        : new ActiveXObject('Microsoft.XMLHTTP');
+
+    xhr.open('POST', 'http://localhost:3000/posts', true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({title: 'PostLog', author: 'Vasia'}));
+
+    xhr.onreadystatechange = function () {
+        var status;
+        var data;
+
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            status = xhr.status;
+
+            if (status === 201) {
+
+                data = JSON.parse(xhr.responseText);
+                console.log('Succes ', data);
+
+            } else {
+                console.log('Error ', status);
+            }
+        }
+    };
+}
+
+document.getElementById("create").addEventListener("click", postJSON, false);
